@@ -1,26 +1,32 @@
-name : Terraform-Workflow
+name: Terraform CI
 
 on:
   pull_request:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
-  build:
-    name: Infra Setup
-    runs-on : ubuntu-latest
+  terraform-checks:
+    name: Terraform Format & Validate
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3  
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: latest
 
-      - name: Format Terraform
-        run: terraform fmt
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
 
-      - name: Validate Terraform
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
         run: terraform validate
