@@ -4,17 +4,17 @@ variable "aws_region" {
 }
 
 variable "vpc_cidr" {
-  type        = string
+  type = string
 }
 
 variable "availability_zones" {
-  type        = list(string)
+  type = list(string)
 }
 
 variable "public_subnet_cidrs" {
-  type        = list(string)
+  type = list(string)
 }
 
 variable "private_subnet_cidrs" {
-  type        = list(string)
+  type = list(string)
 }
