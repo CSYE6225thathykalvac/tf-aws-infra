@@ -9,7 +9,7 @@ resource "aws_route_table" "public" {
 
 # Private Route Table
 resource "aws_route_table" "private" {
-   vpc_id = aws_vpc.main.id
+  vpc_id = aws_vpc.main.id
 
   tags = {
     Name = "Private-Route-Table"
