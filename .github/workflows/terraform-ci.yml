@@ -23,10 +23,13 @@ jobs:
         with:
           terraform_version: latest
       - name: Terraform Init
+        working-directory: terraform-networking
         run: terraform init
 
       - name: Terraform Format Check
+        working-directory: terraform-networking
         run: terraform fmt -check -recursive
 
       - name: Terraform Validate
+        working-directory: terraform-networking
         run: terraform validate
