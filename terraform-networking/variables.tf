@@ -18,3 +18,11 @@ variable "public_subnet_cidrs" {
 variable "private_subnet_cidrs" {
   type = list(string)
 }
+
+variable "custom_ami_id" {
+  type = string
+}
+
+variable "application_port" {
+  type = number
+}
