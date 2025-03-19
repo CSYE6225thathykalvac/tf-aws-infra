@@ -8,7 +8,7 @@ resource "aws_db_instance" "mysql_db" {
   username               = var.db_username
   password               = var.db_password
   db_name                = var.db_name
-  parameter_group_name   = aws_db_parameter_group.mysql_param_group.name 
+  parameter_group_name   = aws_db_parameter_group.mysql_param_group.name
   db_subnet_group_name   = aws_db_subnet_group.rds_private_subnet_group.name
   vpc_security_group_ids = [aws_security_group.database_sg.id]
   publicly_accessible    = var.publicly_accessible
