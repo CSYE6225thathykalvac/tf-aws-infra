@@ -15,6 +15,19 @@ resource "aws_instance" "app_instance" {
   # Disable termination protection
   disable_api_termination = false
 
+  user_data = <<-EOT
+    #!/bin/bash
+      echo "DB_HOST=${aws_db_instance.mysql_db.address}" | sudo tee /opt/csye6225/.env 
+      echo "DB_PORT=3306" | sudo tee -a /opt/csye6225/.env 
+      echo "DB_USER=${var.db_username}" | sudo tee -a /opt/csye6225/.env 
+      echo "DB_PASSWORD=${var.db_password}" | sudo tee -a /opt/csye6225/.env
+      echo "DB_NAME=${var.db_name}" | sudo tee -a /opt/csye6225/.env 
+      echo "PORT=${var.application_port}" | sudo tee -a /opt/csye6225/.env 
+      echo "S3_BUCKET_NAME=${aws_s3_bucket.attachments.id}" | sudo tee -a /opt/csye6225/.env 
+      echo "AWS_REGION=${var.aws_region}" | sudo tee -a /opt/csye6225/.env 
+
+    EOT
+
   tags = {
     Name = "Application-Instance"
   }
