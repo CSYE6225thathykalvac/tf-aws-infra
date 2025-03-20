@@ -64,7 +64,7 @@ resource "aws_instance" "app_instance" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.public[0].id
   vpc_security_group_ids = [aws_security_group.application_sg.id]
-  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name  
+  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
 
   # Root block device configuration
   root_block_device {
@@ -96,6 +96,6 @@ resource "aws_instance" "app_instance" {
     aws_vpc.main,
     aws_subnet.public,
     aws_security_group.application_sg,
-    aws_iam_role_policy_attachment.custom_s3_policy  # Ensure IAM policy is attached before EC2 launches
+    aws_iam_role_policy_attachment.custom_s3_policy # Ensure IAM policy is attached before EC2 launches
   ]
 }
