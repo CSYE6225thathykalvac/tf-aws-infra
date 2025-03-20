@@ -1,9 +1,70 @@
+# IAM Role for EC2
+resource "aws_iam_role" "ec2_role" {
+  name = "EC2-${var.project_name}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+    }]
+  })
+}
+
+# Attach Amazon S3 Full Access Policy to EC2 Role
+resource "aws_iam_role_policy_attachment" "s3_access" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
+# IAM Instance Profile for EC2
+resource "aws_iam_instance_profile" "ec2_profile" {
+  name = "ec2-instance-profile-${var.project_name}"
+  role = aws_iam_role.ec2_role.name
+}
+
+# Custom IAM Policy for S3 Bucket Access
+resource "aws_iam_policy" "s3_access_policy" {
+  name        = "${var.project_name}-S3AccessPolicy"
+  description = "Policy granting access to the existing S3 bucket"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["s3:ListBucket"]
+        Resource = "${aws_s3_bucket.attachments.arn}"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject"
+        ]
+        Resource = "${aws_s3_bucket.attachments.arn}/*"
+      }
+    ]
+  })
+}
+
+# Attach the custom S3 policy to the EC2 IAM Role
+resource "aws_iam_role_policy_attachment" "custom_s3_policy" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = aws_iam_policy.s3_access_policy.arn
+}
+
+# Update EC2 instance to use the IAM Instance Profile
 resource "aws_instance" "app_instance" {
   ami                    = var.custom_ami_id
-  instance_type          = "t2.micro"              # Default instance type
-  subnet_id              = aws_subnet.public[0].id # Launch in the first public subnet
+  instance_type          = "t2.micro"
+  subnet_id              = aws_subnet.public[0].id
   vpc_security_group_ids = [aws_security_group.application_sg.id]
-
+  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
 
   # Root block device configuration
   root_block_device {
@@ -34,6 +95,7 @@ resource "aws_instance" "app_instance" {
   depends_on = [
     aws_vpc.main,
     aws_subnet.public,
-    aws_security_group.application_sg
+    aws_security_group.application_sg,
+    aws_iam_role_policy_attachment.custom_s3_policy # Ensure IAM policy is attached before EC2 launches
   ]
 }

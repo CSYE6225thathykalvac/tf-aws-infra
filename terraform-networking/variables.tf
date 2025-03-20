@@ -70,3 +70,9 @@ variable "multi_az" {
 variable "rds_subnet_group" {
   type = string
 }
+
+variable "project_name" {
+  description = "Project Name Prefix"
+  type        = string
+  default     = "csye6225"
+}
