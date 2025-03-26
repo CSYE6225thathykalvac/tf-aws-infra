@@ -14,6 +14,11 @@ resource "aws_iam_role" "ec2_role" {
   })
 }
 
+resource "aws_iam_role_policy_attachment" "cloudwatch_agent" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
 # Attach Amazon S3 Full Access Policy to EC2 Role
 resource "aws_iam_role_policy_attachment" "s3_access" {
   role       = aws_iam_role.ec2_role.name
@@ -87,6 +92,8 @@ resource "aws_instance" "app_instance" {
       echo "S3_BUCKET_NAME=${aws_s3_bucket.attachments.id}" | sudo tee -a /opt/csye6225/.env 
       echo "AWS_REGION=${var.aws_region}" | sudo tee -a /opt/csye6225/.env 
 
+      sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/cloud-watch.json -s
+      sudo systemctl restart webapp.service
     EOT
 
   tags = {
