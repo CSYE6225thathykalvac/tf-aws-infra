@@ -88,9 +88,9 @@ variable "domain_name" {
 }
 
 variable "high_cpu_threshold" {
-  type        = number
+  type = number
 }
 
 variable "low_cpu_threshold" {
-  type        = number
+  type = number
 }
