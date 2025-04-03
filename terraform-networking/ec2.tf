@@ -20,10 +20,10 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_agent" {
 }
 
 # Attach Amazon S3 Full Access Policy to EC2 Role
-resource "aws_iam_role_policy_attachment" "s3_access" {
-  role       = aws_iam_role.ec2_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-}
+# resource "aws_iam_role_policy_attachment" "s3_access" {
+#   role       = aws_iam_role.ec2_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+# }
 
 # IAM Instance Profile for EC2
 resource "aws_iam_instance_profile" "ec2_profile" {
@@ -49,7 +49,11 @@ resource "aws_iam_policy" "s3_access_policy" {
         Action = [
           "s3:PutObject",
           "s3:GetObject",
-          "s3:DeleteObject"
+          "s3:DeleteObject",
+          "s3:PutBucketPolicy",
+          "s3:PutBucketEncryption",
+          "s3:PutLifecycleConfiguration"
+
         ]
         Resource = "${aws_s3_bucket.attachments.arn}/*"
       }
