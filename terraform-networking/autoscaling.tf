@@ -40,8 +40,7 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
   namespace           = "AWS/EC2"
   period              = "120"
   statistic           = "Average"
-  threshold           = "3"
-  alarm_description   = "Average CPU utilization over last 2 periods exceeded 5%"
+  threshold           = var.high_cpu_threshold
   alarm_actions       = [aws_autoscaling_policy.scale_up.arn]
 
   dimensions = {
@@ -57,8 +56,7 @@ resource "aws_cloudwatch_metric_alarm" "low_cpu" {
   namespace           = "AWS/EC2"
   period              = "120"
   statistic           = "Average"
-  threshold           = "2"
-  alarm_description   = "Average CPU utilization over last 2 periods below 3%"
+  threshold           = var.low_cpu_threshold
   alarm_actions       = [aws_autoscaling_policy.scale_down.arn]
 
   dimensions = {

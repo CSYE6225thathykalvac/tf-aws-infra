@@ -86,3 +86,11 @@ variable "domain_name" {
   description = "The base domain name (e.g., your-domain-name.tld)"
   type        = string
 }
+
+variable "high_cpu_threshold" {
+  type = number
+}
+
+variable "low_cpu_threshold" {
+  type = number
+}
