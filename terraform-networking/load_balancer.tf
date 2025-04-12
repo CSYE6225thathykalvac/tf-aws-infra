@@ -11,12 +11,12 @@ resource "aws_security_group" "load_balancer_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  #   ingress {
-  #     from_port   = 443
-  #     to_port     = 443
-  #     protocol    = "tcp"
-  #     cidr_blocks = ["0.0.0.0/0"]
-  #   }
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress {
     from_port   = 0
@@ -68,12 +68,17 @@ resource "aws_lb_target_group" "app_tg" {
     Name = "App-TargetGroup"
   }
 }
-
-# Listener for HTTP (will redirect to HTTPS)
+data "aws_acm_certificate" "ssl_cert" {
+  domain      = var.domain_name
+  statuses    = ["ISSUED"]
+  most_recent = true
+}
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.app_lb.arn
-  port              = 80
-  protocol          = "HTTP"
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn   = data.aws_acm_certificate.ssl_cert.arn
 
   default_action {
     type             = "forward"
