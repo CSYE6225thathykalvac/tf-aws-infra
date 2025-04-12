@@ -9,7 +9,12 @@ resource "aws_security_group" "application_sg" {
     protocol        = "tcp"
     security_groups = [aws_security_group.load_balancer_sg.id]
   }
-
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
   # Allow application port from load balancer only
   ingress {
     from_port       = var.application_port

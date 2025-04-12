@@ -94,3 +94,11 @@ variable "high_cpu_threshold" {
 variable "low_cpu_threshold" {
   type = number
 }
+
+variable "account_id" {
+  type = string
+}
+
+variable "cli_user" {
+  type = string
+}
