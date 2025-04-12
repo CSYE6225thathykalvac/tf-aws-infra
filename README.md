@@ -44,3 +44,10 @@
 - The EC2 instance must be launched in the VPC created by Terraform. You cannot launch the EC2 instance in the default VPC.
 - The application security group should be attached to this EC2 instance.
 - Ensure that the EBS volumes are terminated when EC2 instances are terminated.
+
+##  certificate import
+aws acm import-certificate \
+  --certificate fileb://demo_charanreddyt_me.crt \
+  --private-key fileb://private.key \
+  --certificate-chain fileb://demo_charanreddyt_me.ca-bundle \
+  --region us-east-1
